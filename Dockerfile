@@ -1,29 +1,47 @@
-# Use Python slim image
-FROM python:3.11-slim
+# ============================================
+# STAGE 1: Builder - Install dependencies
+# ============================================
+FROM python:3.11-slim AS builder
 
-# Set working directory
 WORKDIR /app
 
-# Install system dependencies
+# Install build dependencies
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    build-essential \
+    gcc \
+    g++ \
     && rm -rf /var/lib/apt/lists/*
 
-# Copy requirements first for better caching
+# Copy requirements
 COPY requirements.txt .
 
-# Install Python dependencies
-RUN pip install --no-cache-dir --upgrade pip && \
-    pip install --no-cache-dir -r requirements.txt
+# Install to a local directory
+RUN pip install --no-cache-dir --prefix=/install -r requirements.txt
+
+# Pre-download the sentence transformer model
+RUN python -c "from sentence_transformers import SentenceTransformer; SentenceTransformer('all-MiniLM-L6-v2')"
+
+# ============================================
+# STAGE 2: Runtime - Minimal final image
+# ============================================
+FROM python:3.11-slim
+
+WORKDIR /app
+
+# Copy installed packages from builder
+COPY --from=builder /install /usr/local
+
+# Copy model cache from builder
+COPY --from=builder /root/.cache /root/.cache
 
 # Copy application code
-COPY main.py .
+COPY chatbot.py .
 
-# Set environment variables
+# Set environment
 ENV PYTHONUNBUFFERED=1
+ENV PYTHONDONTWRITEBYTECODE=1
 
-# Expose port (Railway will inject $PORT)
+# Expose port
 EXPOSE $PORT
 
-# Start command - Railway will provide PORT env var
-CMD sh -c "uvicorn main:app --host 0.0.0.0 --port ${PORT:-8000} --workers 1 --log-level info"
+# Run app
+CMD sh -c "uvicorn chatbot:app --host 0.0.0.0 --port ${PORT:-8000} --workers 1 --log-level info"
