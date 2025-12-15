@@ -1,0 +1,14 @@
+*.md
+README*
+.git
+.github
+tests/
+docs/
+*.pyc
+__pycache__
+.pytest_cache
+*.log
+.env.example
+.vscode
+.idea
+*.swp
