@@ -7,12 +7,17 @@ __pycache__/
 *.egg-info/
 dist/
 build/
+*.pyc
+*.pyo
+*.pyd
 
 # Virtual environments
 env/
 venv/
 ENV/
 .venv
+pip-log.txt
+pip-delete-this-directory.txt
 
 # IDEs
 .vscode/
@@ -20,34 +25,70 @@ ENV/
 *.swp
 *.swo
 *~
+.project
+.pydevproject
 
 # Testing
 .pytest_cache/
 .coverage
+.coverage.*
 htmlcov/
+.tox/
+.nox/
 
 # Git
 .git/
 .gitignore
 .gitattributes
+.github/
 
 # Documentation
 *.md
+README*
 docs/
+*.rst
+LICENSE*
 
 # OS
 .DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
 Thumbs.db
+desktop.ini
 
 # Logs
 *.log
+logs/
 
 # Environment files
 .env
-.env.local
-.env.*.local
+.env.*
+*.env
 
 # Temporary files
 tmp/
 temp/
 *.tmp
+*.bak
+*.swp
+
+# Data files (if any)
+*.csv
+*.json
+*.xlsx
+*.pdf
+
+# Images
+*.jpg
+*.jpeg
+*.png
+*.gif
+*.svg
+
+# Other
+node_modules/
+.npm
+.yarn
